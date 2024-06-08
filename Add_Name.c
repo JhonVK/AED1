@@ -8,7 +8,6 @@ typedef struct Nodo {
     struct Nodo *prox;
 } Nodo;
 
-
 Nodo *head = NULL;                                           
 
 Nodo* criarNodo(char *nome) {
