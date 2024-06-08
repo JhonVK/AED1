@@ -8,6 +8,7 @@ void adicionarNome(char **ponteiro, unsigned int *tamanhoTotal, int *conta) {
     fgets(nome, 100, stdin);
     *tamanhoTotal = (*tamanhoTotal + strlen(nome) - 1) * sizeof(char);
     *ponteiro = realloc(*ponteiro, *tamanhoTotal);
+    
     if(*ponteiro==NULL){
         printf("erro de alocação");
         return 0;
