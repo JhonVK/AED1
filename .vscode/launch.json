@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/joaov/Desktop/OneDrive/AED1",
-      "program": "c:/Users/joaov/Desktop/OneDrive/AED1/build/Debug/outDebug",
+      "cwd": "c:/Users/joaov/OneDrive/AED1",
+      "program": "c:/Users/joaov/OneDrive/AED1/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
