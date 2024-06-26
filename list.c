@@ -31,10 +31,15 @@ Node *new(Data data){
 
 Data search(List *lista, int indice){
     Node *atual= lista->pFirst;
-    for(int i=0; atual=!NULL && i<indice; i++){
+    for(int i=0; atual!=NULL && i<indice; i++){
         atual=atual->pNext;
     }
-    return atual->info;
+    if (atual != NULL) {
+        return (atual->info);
+    } else {
+        Data emptyData = { 0, "", 0 };
+        return emptyData;
+    }
 
 }
 
@@ -43,7 +48,7 @@ bool push(List *pLista, Node *pNodo, unsigned int nIndex){
     unsigned int nPos;
 
     if(pLista->pFirst==NULL && nIndex!=0){  
-        return false; //index invalido
+        return false;
     }else if(pLista->pFirst==NULL && nIndex==0){
         pLista->pFirst=pNodo;
         pNodo->pNext=NULL;
@@ -62,7 +67,7 @@ bool push(List *pLista, Node *pNodo, unsigned int nIndex){
     }
 
     if(!pAtual){
-        return false; //index nao existe
+        return false;
     }
 
     pNodo->pNext = pAtual;
@@ -70,7 +75,7 @@ bool push(List *pLista, Node *pNodo, unsigned int nIndex){
     if (pAnterior != NULL) {
         pAnterior->pNext = pNodo;
     } else {
-        pLista->pFirst = pNodo; // Inserir no início da lista
+        pLista->pFirst = pNodo; 
     }
     return true;
 }   
@@ -81,8 +86,7 @@ int main(){
 
    List myList;
    int n=0, index;
-   int idade, salario;
-   char nome[40];
+  
 
    while(n!=5){
     printf("Digite o que deseja fazer: 1- Adicionar elemento a lista, 5-Sair do Programa\n");
@@ -92,21 +96,33 @@ int main(){
    case 1:
     printf("Em qual index voce desejar colocar o elemento na lista?\n");
     scanf("%d", &index);
-    printf("Digite informações do nodo (idade, nome e salario)\n");
-    scanf("%d", &idade);
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = '\0';
-    while ( getchar() != '\n' );
-    scanf("%d", &salario);
+
+    printf("Digite informacoes do nodo (idade, nome e salario)\n");
+    scanf("%d", &data.age);
+    while (getchar() != '\n');
+    fgets(data.name, sizeof(data.name), stdin);
+   
+    scanf("%d", &data.income);
+
+  
+
     Node *nodo=new(data);
+
     bool result=push(&myList, nodo, index);
+
     if(result==true){
         printf("O nodo foi adicionado com sucesso\n");
     }else{
         printf("ERRO INDEX\n");
     }
     break;
-   
+
+   case 2:
+    printf("Em qual index voce deseja pesquisar?\n");
+    scanf("%d", &index);
+    Data data2=search(&myList, index);
+    printf("%d %d %s\n", data2.age, data2.name, data2.income);
+    break;
    }
    
    }
