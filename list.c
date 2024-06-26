@@ -20,6 +20,20 @@ typedef struct
     Node *pFirst;
 }List;
 
+void clearList(List *pLista) {
+    Node *atual = pLista->pFirst;
+    Node *temp;
+
+    while (atual != NULL) {
+        temp = atual;
+        atual = atual->pNext;
+        free(temp);
+    }
+    pLista->pFirst = NULL;
+}
+
+
+
 Node *new(Data data){
     Node *newNode=(Node *)malloc(sizeof(Node));
     newNode->info.age=data.age;
@@ -49,15 +63,19 @@ bool pop(List *pLista, unsigned int index){
     
     if(index==0 && pLista->pFirst!=NULL){
         pLista->pFirst=pLista->pFirst->pNext;
+        free(atual);
         return true;
     }else if(index>0 && pLista->pFirst!=NULL){
        for(unsigned int i=0; i<index; i++){
          anterior=atual;
          atual=atual->pNext;
     }
-        anterior->pNext=atual->pNext; 
+    if (atual != NULL) {
+        anterior->pNext = atual->pNext;
+        free(atual);
         return true;
     }
+  }
     return false;
 }
 
@@ -143,10 +161,13 @@ int main(){
      scanf("%d", &index);
      pop(&myList, index);
     break;
+   case 5:
+     clearList(&myList);
+    break;
+    
    }
    
    }
-
 
     return 0;
 }
