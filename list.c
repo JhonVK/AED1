@@ -29,6 +29,14 @@ Node *new(Data data){
     return newNode;
 }
 
+Data search(List *lista, int indice){
+    Node *atual= lista->pFirst;
+    for(int i=0; atual=!NULL && i<indice; i++){
+        atual=atual->pNext;
+    }
+    return atual->info;
+
+}
 
 bool push(List *pLista, Node *pNodo, unsigned int nIndex){
     Node *pAtual, *pAnterior;
