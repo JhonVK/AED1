@@ -43,9 +43,27 @@ Data search(List *lista, int indice){
 
 }
 
+bool pop(List *pLista, unsigned int index){
+    Node *atual=pLista->pFirst;
+    Node *anterior=NULL;
+    
+    if(index==0 && pLista->pFirst!=NULL){
+        pLista->pFirst=pLista->pFirst->pNext;
+        return true;
+    }else if(index>0 && pLista->pFirst!=NULL){
+       for(unsigned int i=0; i<index; i++){
+         anterior=atual;
+         atual=atual->pNext;
+    }
+        anterior->pNext=atual->pNext; 
+        return true;
+    }
+    return false;
+}
+
 bool push(List *pLista, Node *pNodo, unsigned int nIndex){
-    Node *pAtual, *pAnterior;
-    unsigned int nPos;
+    Node *pAtual=pLista->pFirst, *pAnterior;
+    unsigned int nPos=0;
 
     if(pLista->pFirst==NULL && nIndex!=0){  
         return false;
@@ -58,16 +76,11 @@ bool push(List *pLista, Node *pNodo, unsigned int nIndex){
         pLista->pFirst=pNodo;
         return true;
     }
-    pAtual=pLista->pFirst;
 
     while (pAtual != NULL && nPos < nIndex) {
         pAnterior = pAtual;
         pAtual = pAtual->pNext;
         nPos++;
-    }
-
-    if(!pAtual){
-        return false;
     }
 
     pNodo->pNext = pAtual;
@@ -85,6 +98,7 @@ int main(){
    Data data;
 
    List myList;
+   myList.pFirst=NULL;
    int n=0, index;
   
 
@@ -121,7 +135,13 @@ int main(){
     printf("Em qual index voce deseja pesquisar?\n");
     scanf("%d", &index);
     Data data2=search(&myList, index);
-    printf("%d %d %s\n", data2.age, data2.name, data2.income);
+    printf("%d %d %s\n", data2.age, data2.income, data2.name);
+    break;
+
+   case 3:
+     printf("Em qual index voce deseja excluir?\n");
+     scanf("%d", &index);
+     pop(&myList, index);
     break;
    }
    
