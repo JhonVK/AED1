@@ -12,7 +12,6 @@ void *alocarPessoa(char *nome, int *idade, char *email){
     }
 
 
-
 int main() {
 
 
