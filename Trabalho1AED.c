@@ -3,7 +3,7 @@
 #include <string.h>
 
 // Tamanho máximo para nome e email
-#define MAX_NOME 50
+#define MAX_NOME 100
 #define MAX_EMAIL 50
 
 void adicionarPessoa(void *pBuffer);
