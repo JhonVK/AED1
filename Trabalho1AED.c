@@ -12,8 +12,8 @@ void buscarPessoa(void *pBuffer);
 void listarTodos(void *pBuffer);
 
 int main() {
-    // Tamanho do buffer: opção (int) + head (void*) + tail (void*) + nome (char)
-    void *pBuffer = malloc(sizeof(int) + 2 * sizeof(void *)+ MAX_NOME * sizeof(char));
+    // Tamanho do buffer: opção (int) + head (void*) + nome (char)
+    void *pBuffer = malloc(sizeof(int) + sizeof(void *) + MAX_NOME * sizeof(char));
     if (!pBuffer) {
         printf("Erro ao alocar memoria\n");
         return 1;
@@ -21,7 +21,7 @@ int main() {
 
     *(int *)pBuffer = 0; // Inicializa a opção do menu
     *(void **)(pBuffer + sizeof(int)) = NULL; // Inicializa o head da lista
-    *(void **)(pBuffer + sizeof(int) + sizeof(void *)) = NULL; // Inicializa o tail da lista
+
     do {
         printf("\n1- Adicionar Pessoa\n");
         printf("2- Remover Pessoa\n");
@@ -111,12 +111,12 @@ void adicionarPessoa(void *pBuffer) {
 
 void removerPessoa(void *pBuffer) {
     printf("Nome da pessoa a remover: ");
-    scanf("%s", (char *)(pBuffer + sizeof(int) + 2 * sizeof(void *)));
+    scanf("%s", (char *)(pBuffer + sizeof(int) + sizeof(void *)));
 
     void *head = *(void **)(pBuffer + sizeof(int));
     void *current = head;
 
-    while (current != NULL && strcmp((char *)current, (char *)(pBuffer + sizeof(int) + 2 * sizeof(void *))) != 0) {
+    while (current != NULL && strcmp((char *)current, (char *)(pBuffer + sizeof(int) + sizeof(void *))) != 0) {
         current = *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL);
     }
 
@@ -144,11 +144,11 @@ void removerPessoa(void *pBuffer) {
 
 void buscarPessoa(void *pBuffer) {
     printf("Nome da pessoa a buscar: ");
-    scanf("%s", (char *)(pBuffer + sizeof(int) + 2 * sizeof(void *)));
+    scanf("%s", (char *)(pBuffer + sizeof(int) + sizeof(void *)));
 
     void *current = *(void **)(pBuffer + sizeof(int));
 
-    while (current != NULL && strcmp((char *)current, (char *)(pBuffer + sizeof(int) + 2 * sizeof(void *))) != 0) {
+    while (current != NULL && strcmp((char *)current, (char *)(pBuffer + sizeof(int) + sizeof(void *))) != 0) {
         current = *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL);
     }
 
