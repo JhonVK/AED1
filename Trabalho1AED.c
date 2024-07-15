@@ -12,24 +12,23 @@ void buscarPessoa(void *pBuffer);
 void listarTodos(void *pBuffer);
 
 int main() {
-    // Tamanho do buffer: opção (int) + nome (char[MAX_NOME]) + idade (int) + email (char[MAX_EMAIL]) + head (void*) + tail (void*)
-    void *pBuffer = malloc(sizeof(int) + MAX_NOME * sizeof(char) + sizeof(int) + MAX_EMAIL * sizeof(char) + 2 * sizeof(void *));
+    // Tamanho do buffer: opção (int) + head (void*) + tail (void*) + nome (char)
+    void *pBuffer = malloc(sizeof(int) + 2 * sizeof(void *)+ MAX_NOME * sizeof(char));
     if (!pBuffer) {
-        printf("Erro ao alocar memória\n");
+        printf("Erro ao alocar memoria\n");
         return 1;
     }
 
     *(int *)pBuffer = 0; // Inicializa a opção do menu
     *(void **)(pBuffer + sizeof(int)) = NULL; // Inicializa o head da lista
     *(void **)(pBuffer + sizeof(int) + sizeof(void *)) = NULL; // Inicializa o tail da lista
-
     do {
         printf("\n1- Adicionar Pessoa\n");
         printf("2- Remover Pessoa\n");
         printf("3- Buscar Pessoa\n");
         printf("4- Listar todos\n");
         printf("5- Sair\n");
-        printf("Escolha uma opção: ");
+        printf("Escolha uma opcao: ");
         scanf("%d", (int *)(pBuffer)); // Lê a opção diretamente no buffer
 
         switch (*(int *)pBuffer) {
@@ -48,7 +47,7 @@ int main() {
             case 5:
                 break;
             default:
-                printf("Opção inválida!\n");
+                printf("Opcao invalida!\n");
                 break;
         }
     } while (*(int *)pBuffer != 5);
@@ -56,7 +55,7 @@ int main() {
     // Liberar memória alocada para a lista
     void *current = *(void **)(pBuffer + sizeof(int));
     while (current != NULL) {
-        void *next = *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL + 2 * sizeof(void *));
+        void *next = *(void **)(current + sizeof(int) + MAX_NOME * sizeof(char) + sizeof(int) + MAX_EMAIL * sizeof(char) + 2 * sizeof(void *));
         free(current);
         current = next;
     }
@@ -66,9 +65,9 @@ int main() {
 }
 
 void adicionarPessoa(void *pBuffer) {
-    void *novo = malloc(MAX_NOME + sizeof(int) + MAX_EMAIL + 2 * sizeof(void *));
+    void *novo = malloc(MAX_NOME+ sizeof(int) + MAX_EMAIL + 2 * sizeof(void *));
     if (!novo) {
-        printf("Erro ao alocar memória\n");
+        printf("Erro ao alocar memoria\n");
         return;
     }
 
@@ -112,7 +111,7 @@ void adicionarPessoa(void *pBuffer) {
 
 void removerPessoa(void *pBuffer) {
     printf("Nome da pessoa a remover: ");
-    scanf("%s", (char *)(pBuffer + sizeof(int) + 2 * sizeof(void *))); // Armazena o nome no local correto no buffer
+    scanf("%s", (char *)(pBuffer + sizeof(int) + 2 * sizeof(void *)));
 
     void *head = *(void **)(pBuffer + sizeof(int));
     void *current = head;
@@ -154,7 +153,7 @@ void buscarPessoa(void *pBuffer) {
     }
 
     if (current == NULL) {
-        printf("Pessoa não encontrada!\n");
+        printf("Pessoa nao encontrada!\n");
         return;
     }
 
