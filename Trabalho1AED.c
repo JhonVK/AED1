@@ -85,29 +85,29 @@ void adicionarPessoa(void *pBuffer) {
 
 
 
-    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = NULL; // Inicializa ant
-    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // prox
+    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = NULL; // Inicializa proximo
+    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // Inicializa anterior
 
     // Inserção ordenada
-    void *head = *(void **)(pBuffer + sizeof(int));
-    void *prev = NULL;
-    void *current = head;
+    void *head = *(void **)(pBuffer + sizeof(int));//ponteiro para cabeça
+    void *pas = NULL; //ponteiro para anterior
+    void *current = head; //ponteiro para atual
 
     while (current != NULL && strcmp((char *)current, (char *)novo) < 0) {
-        prev = current;
+        pas = current;
         current = *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL);
     }
 
-    if (prev == NULL) { // Inserção no início
-        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = head; //anterior aponta para head
+    if (pas == NULL) { // Inserção no início
+        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = head; //ponteiro anterior do novo aponta para head
         *(void **)(pBuffer + sizeof(int)) = novo; // head aponta para novo
-        
+
     } else { // Inserção no meio ou fim
-        *(void **)(prev + MAX_NOME + sizeof(int) + MAX_EMAIL) = novo;
-        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = prev;
-        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = current;
+        *(void **)(pas + MAX_NOME + sizeof(int) + MAX_EMAIL) = novo;  //ponteiro proximo de pas aponta para novo
+        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = pas; //ponteiro anterior do novo aponta para pas
+        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = current;   //ponteiro proximo do novo aponta para current
         if (current != NULL) {
-            *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = novo;
+            *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = novo; //ponteiro anterior de current aponta para novo
         }
     }
 
