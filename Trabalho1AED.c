@@ -85,8 +85,8 @@ void adicionarPessoa(void *pBuffer) {
 
 
 
-    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = NULL; // Inicializa prox
-    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // Inicializa ant
+    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = NULL; // Inicializa ant
+    *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // prox
 
     // Inserção ordenada
     void *head = *(void **)(pBuffer + sizeof(int));
@@ -99,11 +99,9 @@ void adicionarPessoa(void *pBuffer) {
     }
 
     if (prev == NULL) { // Inserção no início
-        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = head;
-        if (head != NULL) {
-            *(void **)(head + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = novo;
-        }
-        *(void **)(pBuffer + sizeof(int)) = novo;
+        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = head; //anterior aponta para head
+        *(void **)(pBuffer + sizeof(int)) = novo; // head aponta para novo
+        
     } else { // Inserção no meio ou fim
         *(void **)(prev + MAX_NOME + sizeof(int) + MAX_EMAIL) = novo;
         *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = prev;
