@@ -55,7 +55,7 @@ int main() {
     // Liberar memória alocada para a lista
     void *current = *(void **)(pBuffer + sizeof(int));
     while (current != NULL) {
-        void *next = *(void **)(current + sizeof(int) + MAX_NOME * sizeof(char) + sizeof(int) + MAX_EMAIL * sizeof(char) + 2 * sizeof(void *));
+        void *next = *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL);
         free(current);
         current = next;
     }
@@ -71,12 +71,19 @@ void adicionarPessoa(void *pBuffer) {
         return;
     }
 
+    while (getchar() != '\n');
     printf("Nome: ");
-    scanf("%s", (char *)novo);
+    fgets((char *)novo, MAX_NOME, stdin);
+    ((char *)novo)[strcspn((char *)novo, "\n")] = '\0';
+  
     printf("Idade: ");
     scanf("%d", (int *)(novo + MAX_NOME));
+   
+    while (getchar() != '\n');
     printf("Email: ");
-    scanf("%s", (char *)(novo + MAX_NOME + sizeof(int)));
+    fgets((char *)(novo + MAX_NOME + sizeof(int)), MAX_EMAIL + 1, stdin);
+
+
 
     *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = NULL; // Inicializa prox
     *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // Inicializa ant
@@ -111,7 +118,9 @@ void adicionarPessoa(void *pBuffer) {
 
 void removerPessoa(void *pBuffer) {
     printf("Nome da pessoa a remover: ");
-    scanf("%s", (char *)(pBuffer + sizeof(int) + sizeof(void *)));
+    while(getchar()!='\n');
+    fgets((char *)(pBuffer + sizeof(int) + sizeof(void *)), MAX_NOME, stdin);
+    ((char *)pBuffer + sizeof(int) + sizeof(void *))[strcspn((char *)pBuffer + sizeof(int) + sizeof(void *), "\n")] = '\0';
 
     void *head = *(void **)(pBuffer + sizeof(int));
     void *current = head;
@@ -121,7 +130,7 @@ void removerPessoa(void *pBuffer) {
     }
 
     if (current == NULL) {
-        printf("Pessoa não encontrada!\n");
+        printf("Pessoa nao encontrada!\n");
         return;
     }
 
@@ -144,7 +153,9 @@ void removerPessoa(void *pBuffer) {
 
 void buscarPessoa(void *pBuffer) {
     printf("Nome da pessoa a buscar: ");
-    scanf("%s", (char *)(pBuffer + sizeof(int) + sizeof(void *)));
+    while (getchar() != '\n');
+    fgets((char *)(pBuffer + sizeof(int) + sizeof(void *)), MAX_NOME, stdin);
+     ((char *)pBuffer + sizeof(int) + sizeof(void *))[strcspn((char *)pBuffer + sizeof(int) + sizeof(void *), "\n")] = '\0';
 
     void *current = *(void **)(pBuffer + sizeof(int));
 
