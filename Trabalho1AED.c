@@ -89,7 +89,7 @@ void adicionarPessoa(void *pBuffer) {
     *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // Inicializa anterior
 
     // Inserção ordenada
-    void *head = *(void **)(pBuffer + sizeof(int));//ponteiro para cabeça
+    void *head = *(void **)(pBuffer + sizeof(int));//ponteiro para primeiro endereço
     void *pas = NULL; //ponteiro para anterior
     void *current = head; //ponteiro para atual
 
@@ -99,9 +99,11 @@ void adicionarPessoa(void *pBuffer) {
     }
 
     if (pas == NULL) { // Inserção no início
-        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = head; //ponteiro anterior do novo aponta para head
-        *(void **)(pBuffer + sizeof(int)) = novo; // head aponta para novo
-
+        head = novo;
+        *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = current;
+        if (current != NULL) {
+            *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = novo;
+        }
     } else { // Inserção no meio ou fim
         *(void **)(pas + MAX_NOME + sizeof(int) + MAX_EMAIL) = novo;  //ponteiro proximo de pas aponta para novo
         *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = pas; //ponteiro anterior do novo aponta para pas
@@ -110,7 +112,7 @@ void adicionarPessoa(void *pBuffer) {
             *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = novo; //ponteiro anterior de current aponta para novo
         }
     }
-
+    *(void **)(pBuffer + sizeof(int)) = head; //
     printf("Pessoa adicionada com sucesso!\n");
 }
 
@@ -139,10 +141,6 @@ void removerPessoa(void *pBuffer) {
         *(void **)(prev + MAX_NOME + sizeof(int) + MAX_EMAIL) = next;
     } else {
         *(void **)(pBuffer + sizeof(int)) = next;
-    }
-
-    if (next != NULL) {
-        *(void **)(next + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = prev;
     }
 
     free(current);
