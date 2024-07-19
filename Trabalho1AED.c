@@ -13,7 +13,7 @@ void listarTodos(void *pBuffer);
 
 int main() {
     // Tamanho do buffer: opção (int) + head (void*) + nome (char)
-    void *pBuffer = malloc(sizeof(int) + sizeof(void *) + MAX_NOME * sizeof(char));
+    void *pBuffer = malloc(sizeof(int) + sizeof(void *) + MAX_NOME);
     if (!pBuffer) {
         printf("Erro ao alocar memoria\n");
         return 1;
@@ -99,8 +99,8 @@ void adicionarPessoa(void *pBuffer) {
     }
 
     if (pas == NULL) { // Inserção no início
-        head = novo;
         *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL) = current;
+        head = novo;
         if (current != NULL) {
             *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = novo;
         }
@@ -122,8 +122,7 @@ void removerPessoa(void *pBuffer) {
     fgets((char *)(pBuffer + sizeof(int) + sizeof(void *)), MAX_NOME, stdin);
     ((char *)pBuffer + sizeof(int) + sizeof(void *))[strcspn((char *)pBuffer + sizeof(int) + sizeof(void *), "\n")] = '\0';
 
-    void *head = *(void **)(pBuffer + sizeof(int));
-    void *current = head;
+    void *current = *(void **)(pBuffer + sizeof(int));
 
     while (current != NULL && strcmp((char *)current, (char *)(pBuffer + sizeof(int) + sizeof(void *))) != 0) {
         current = *(void **)(current + MAX_NOME + sizeof(int) + MAX_EMAIL);
@@ -139,8 +138,12 @@ void removerPessoa(void *pBuffer) {
 
     if (prev != NULL) {
         *(void **)(prev + MAX_NOME + sizeof(int) + MAX_EMAIL) = next;
-    } else {
+    }else{
         *(void **)(pBuffer + sizeof(int)) = next;
+    }
+
+    if (next != NULL) {
+        *(void **)(next + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = prev;
     }
 
     free(current);
