@@ -14,7 +14,6 @@ typedef struct Node{
     Data info;
 }Node;
 
-
 typedef struct
 {
     Node *pFirst;
