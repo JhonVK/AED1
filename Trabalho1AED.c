@@ -89,7 +89,7 @@ void adicionarPessoa(void *pBuffer) {
     *(void **)(novo + MAX_NOME + sizeof(int) + MAX_EMAIL + sizeof(void *)) = NULL; // Inicializa anterior
 
     // Inserção ordenada
-    void *head = *(void **)(pBuffer + sizeof(int));//ponteiro para primeiro endereço
+    void *head = *(void **)(pBuffer + sizeof(int));//ponteiro para primeiro nodo
     void *pas = NULL; //ponteiro para anterior
     void *current = head; //ponteiro para atual
 
