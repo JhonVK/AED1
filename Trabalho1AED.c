@@ -140,6 +140,7 @@ void removerPessoa(void *pBuffer) {
         *(void **)(prev + MAX_NOME + sizeof(int) + MAX_EMAIL) = next;
     }else{
         *(void **)(pBuffer + sizeof(int)) = next;
+        prev=NULL;
     }
 
     if (next != NULL) {
