@@ -26,8 +26,24 @@ void pesquisa(registro *x, no *p){
         *x = p->reg;
     }
 }
+
+void antecessor(no *q, no **r){
+    no *aux;
+    if((*r)->pDir != NULL){
+        antecessor(q, &(*r)->pDir);
+        return;
+    }
+    q->reg= (*r)->reg;
+    aux=*r;
+    *r=(*r)->pEsq;
+    free(aux);
+
+}
+
+
+
 void retira(registro x, no **p){
-    no *auxi;
+    no *aux;
     if(*p==NULL){
         printf("Arvore vazia");
         return;
@@ -47,13 +63,12 @@ void retira(registro x, no **p){
         return;
     }
     if((*p)->pEsq != NULL){
-        antecessor(*p, &(*p)->pEsq)
+        antecessor(*p, &(*p)->pEsq);
         return;
     }else{
         aux=*p;
         *p=(*p)->pDir;
         free(aux);
-
     }
 }
 
@@ -105,6 +120,7 @@ int main() {
     printf("Resultado da pesquisa: %s\n", search.nome);
 
     search.idade = 20;
+    retira(search, &ponteiro);
     pesquisa(&search, ponteiro);
     printf("Resultado da pesquisa: %s\n", search.nome);
 
