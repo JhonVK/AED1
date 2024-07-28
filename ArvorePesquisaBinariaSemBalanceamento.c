@@ -17,11 +17,9 @@ void pesquisa(registro *x, no *p){
     if (p == NULL) {
         printf("Registro nao encontrado\n");
         return;
-    }
-    if (x->idade < p->reg.idade) {
+    }if (x->idade < p->reg.idade) {
         pesquisa(x, p->pEsq);
-    }
-    if (x->idade > p->reg.idade) {
+    } else if (x->idade > p->reg.idade) {
         pesquisa(x, p->pDir);
     } else {
         *x = p->reg;
@@ -91,36 +89,37 @@ void insere(registro *x, no **p) {
 }
 
 int main() {
+
+    no *raiz = NULL; 
+
+    registro search;
+
     registro x;
     x.idade = 20;
-    strcpy(x.nome, "arturdoveneno");
-
-    no *ponteiro = NULL; 
-    insere(&x, &ponteiro);
+    strcpy(x.nome, "teste1");
+    insere(&x, &raiz);
 
     registro y;
     y.idade = 30;
-    strcpy(y.nome, "joaodoteste");
-    insere(&y, &ponteiro);
+    strcpy(y.nome, "teste2");
+    insere(&y, &raiz);
 
     registro z;
     z.idade = 10;
-    strcpy(z.nome, "mariadoteste");
-    insere(&z, &ponteiro);
+    strcpy(z.nome, "teste3");
+    insere(&z, &raiz);
 
 
-    registro search;
-    search.idade = 10;
-    pesquisa(&search, ponteiro);
+    search.idade = 20;
+    pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
 
     search.idade = 30;
-    pesquisa(&search, ponteiro);
+    pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
 
-    search.idade = 20;
-    retira(search, &ponteiro);
-    pesquisa(&search, ponteiro);
+    search.idade = 10;
+    pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
 
     return 0;
