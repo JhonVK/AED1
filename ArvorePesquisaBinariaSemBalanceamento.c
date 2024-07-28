@@ -17,13 +17,16 @@ void pesquisa(registro *x, no *p){
     if (p == NULL) {
         printf("Registro nao encontrado\n");
         return;
-    }if (x->idade < p->reg.idade) {
-        pesquisa(x, p->pEsq);
-    } else if (x->idade > p->reg.idade) {
-        pesquisa(x, p->pDir);
-    } else {
-        *x = p->reg;
     }
+    if (x->idade < p->reg.idade) {
+        pesquisa(x, p->pEsq);
+        return;  
+    }
+    if (x->idade > p->reg.idade) {
+        pesquisa(x, p->pDir);
+        return; 
+    }
+    *x = p->reg;
 }
 
 void antecessor(no *q, no **r){
@@ -100,7 +103,7 @@ int main() {
     insere(&x, &raiz);
 
     registro y;
-    y.idade = 30;
+    y.idade = 300;
     strcpy(y.nome, "teste2");
     insere(&y, &raiz);
 
@@ -113,11 +116,13 @@ int main() {
     search.idade = 20;
     pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
-
+    
+    memset(&search, 0, sizeof(search));
     search.idade = 30;
     pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
 
+    memset(&search, 0, sizeof(search));
     search.idade = 10;
     pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
