@@ -39,7 +39,6 @@ void antecessor(no *q, no **r){
     aux=*r;
     *r=(*r)->pEsq;
     free(aux);
-
 }
 
 void retira(registro x, no **p){
@@ -71,8 +70,6 @@ void retira(registro x, no **p){
         free(aux);
     }
 }
-
-
 
 void insere(registro *x, no **p) {
     if (*p == NULL) {
