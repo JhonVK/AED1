@@ -172,7 +172,7 @@ void buscarPessoa(void *pBuffer) {
     printf("Idade: %d\n", *(int *)(current + MAX_NOME));
     printf("Email: %s\n", (char *)(current + MAX_NOME + sizeof(int)));
 }
-
+    
 void listarTodos(void *pBuffer) {
     void *current = *(void **)(pBuffer + sizeof(int));
 
