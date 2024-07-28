@@ -20,7 +20,8 @@ void pesquisa(registro *x, no *p){
     }
     if (x->idade < p->reg.idade) {
         pesquisa(x, p->pEsq);
-    } else if (x->idade > p->reg.idade) {
+    }
+    if (x->idade > p->reg.idade) {
         pesquisa(x, p->pDir);
     } else {
         *x = p->reg;
@@ -39,8 +40,6 @@ void antecessor(no *q, no **r){
     free(aux);
 
 }
-
-
 
 void retira(registro x, no **p){
     no *aux;
