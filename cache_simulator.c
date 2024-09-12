@@ -7,6 +7,7 @@ void leituraDados(int *argc, char ***argv){
     char string[50];
     char *token;
     
+    
     fgets(string, 50, stdin);
 
     token = strtok(string, " ");
