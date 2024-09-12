@@ -17,7 +17,6 @@ int main( int argc, char *argv[ ] )
 	char *arquivoEntrada = argv[6];
 
 
-
 	printf("nsets = %d\n", nsets);
 	printf("bsize = %d\n", bsize);
 	printf("assoc = %d\n", assoc);
