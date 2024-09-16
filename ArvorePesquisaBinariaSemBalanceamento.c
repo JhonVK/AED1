@@ -109,7 +109,6 @@ int main() {
     strcpy(z.nome, "teste3");
     insere(&z, &raiz);
 
-
     search.idade = 20;
     pesquisa(&search, raiz);
     printf("Resultado da pesquisa: %s\n", search.nome);
