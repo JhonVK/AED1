@@ -44,8 +44,6 @@ int main(int argc, char *argv[]){
 	printf("flagOut = %d\n", flagOut);
 	printf("arquivo = %s\n", arquivoEntrada);
 
-
-
 	return 0;
 }
 
