@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void leituraDados(int *argc, char ***argv){
-   
+void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
+											//*argv é o ponteiro que aponta para o primeiro elemento do vetor
+											//**argv é o valor do vetor
     char string[50];
     char *token;
     
-    
+
     fgets(string, 50, stdin);
 
     token = strtok(string, " ");
@@ -21,12 +22,12 @@ void leituraDados(int *argc, char ***argv){
     }
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	argc=0;
 	leituraDados(&argc, &argv);
 	if (argc != 7){
 		printf("Numero de argumentos incorreto. Utilize:\n");
-		printf("./cache_simulator <nsets> <bsize> <assoc> <substituição> <flag_saida> arquivo_de_entrada\n");
+		printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -43,6 +44,9 @@ int main(int argc, char *argv[]){
 	printf("subst = %s\n", subst);
 	printf("flagOut = %d\n", flagOut);
 	printf("arquivo = %s\n", arquivoEntrada);
+
+
+	free(argv);
 
 	return 0;
 }

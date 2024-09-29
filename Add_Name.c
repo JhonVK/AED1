@@ -30,7 +30,7 @@ void removerNome(char *nome) {
         free(temp);
         return;
     }
-    while (temp != NULL && strcmp(temp->nome, nome) != 0) {
+    while (temp != NULL && strcmp(temp->nome, nome)!= 0) {
         prev = temp;
         temp = temp->prox;
     }

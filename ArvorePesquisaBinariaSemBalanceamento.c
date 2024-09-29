@@ -72,7 +72,7 @@ void retira(registro x, no **p){
 }
 
 void insere(registro *x, no **p) {
-    if (*p == NULL) {
+    if(*p == NULL) {
         *p = (no*)malloc(sizeof(no));
         (*p)->reg = *x;
         (*p)->pEsq = NULL;
