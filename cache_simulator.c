@@ -45,6 +45,7 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	printf("flagOut = %d\n", flagOut);
 	printf("arquivo = %s\n", arquivoEntrada);
 
+	criarCache(&argv);
 
 	free(argv);
 
