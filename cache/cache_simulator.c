@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
 											//*argv é o ponteiro que aponta para o primeiro elemento do vetor
 											//**argv é o valor do vetor
@@ -11,6 +12,11 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 
     fgets(string, 50, stdin);
 
+	int tamanho = strlen(string); // removendo o \n que o fgets concatena no final da leitura
+    if(tamanho>0 && string[tamanho-1]=='\n') {
+        string[tamanho-1] = '\0';
+    }
+	
     token = strtok(string, " ");
 
     while(token!=NULL){
@@ -24,18 +30,17 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 
 void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada){
 	FILE *arquivo;
+	unsigned char buffer;
 
 	arquivo=fopen(arquivoEntrada, "rb");
+	
 	if(arquivo==NULL){
 		printf("erro ao ler arquivo");
 		exit;
 	}
-	do{
-		
-		printf("%d", *arquivo);
-		arquivo++;
+	
 
-	}while(arquivo!=EOF);
+    fclose(arquivo);
 }
 
 int main(int argc, char *argv[]){//argv é um vetor de ponteiros
@@ -43,7 +48,7 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	leituraDados(&argc, &argv);
 	if (argc != 7){
 		printf("Numero de argumentos incorreto. Utilize:\n");
-		printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
+		printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");//./cache simulator 10 10 1 rand 1 bin_100.bin
 		exit(EXIT_FAILURE);
 	}
 
