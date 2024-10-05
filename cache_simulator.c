@@ -22,6 +22,11 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
     }
 }
 
+void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada){
+
+
+}
+
 int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	argc=0;
 	leituraDados(&argc, &argv);
@@ -45,7 +50,7 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	printf("flagOut = %d\n", flagOut);
 	printf("arquivo = %s\n", arquivoEntrada);
 
-	criarCache(&argv);
+	criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
 
 	free(argv);
 
