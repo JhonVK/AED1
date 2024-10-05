@@ -23,8 +23,19 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 }
 
 void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada){
+	FILE *arquivo;
 
+	arquivo=fopen(arquivoEntrada, "rb");
+	if(arquivo==NULL){
+		printf("erro ao ler arquivo");
+		exit;
+	}
+	do{
+		
+		printf("%d", *arquivo);
+		arquivo++;
 
+	}while(arquivo!=EOF);
 }
 
 int main(int argc, char *argv[]){//argv é um vetor de ponteiros
