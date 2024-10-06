@@ -31,7 +31,7 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0, acessos=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0, acessos=0, blocoVazio=0, missConflito=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
 
     arquivo = fopen(arquivoEntrada, "rb");
 
@@ -49,18 +49,12 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     int n_bits_indice = log2(nsets);
     int n_bits_tag = 32 - n_bits_offset - n_bits_indice;
 
-    printf("offset: %d\n", n_bits_offset);
-    printf("indice: %d\n", n_bits_indice);
-    printf("tag: %d\n", n_bits_tag);
-
     while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // uns char tem 8 bits, 8*4= 32 bits
 
     	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
 		tag=endereco>>(n_bits_offset + n_bits_indice);
 		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
 		acessos++;
-		printf("Tag: %d, Indice: %d\n", tag, indice);
-
 
 		for(int i=0; i<assoc; i++){
 			if(cache_val[indice][i]==1 && cache_tag[indice][i]==tag){
@@ -70,9 +64,22 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 		}
 		if(hitTemp==0){//(MISS)
 			if(subst=='R'){
-				int randBloco=rand()%assoc;
-				cache_val[indice][randBloco]=1;
-				cache_tag[indice][randBloco]=tag;
+				for(int i=0; i<assoc; i++){
+					if(cache_val[indice][i]==0 && cache_tag[indice][i]==0){
+						cache_val[indice][i]=1;
+						cache_tag[indice][i]=tag;
+						blocoVazio=1;
+						break;
+					}
+				}
+				if(blocoVazio==0){
+					missConflito++;
+					int randBloco=rand()%assoc;
+					cache_val[indice][randBloco]=1;
+					cache_tag[indice][randBloco]=tag;
+				}else{
+					blocoVazio=0;
+				}
 			}
 		}else{
 			hit+=hitTemp;
@@ -81,7 +88,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     }
 	if(flagOut==1){
 		printf("hits total: %d\n", hit);
-		printf("%d %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos); // casting para float
+		printf("%d %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos), (float)missCapacidade/acessos; // casting para float
 	}else{
 
 	}
