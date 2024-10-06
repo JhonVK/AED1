@@ -30,15 +30,18 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 
 void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada){
 	FILE *arquivo;
-	unsigned char buffer;
+	unsigned int buffer;
 
 	arquivo=fopen(arquivoEntrada, "rb");
 	
 	if(arquivo==NULL){
 		printf("erro ao ler arquivo");
-		exit;
+		exit(1);
 	}
-	
+	while (fread(&buffer, sizeof(unsigned int), 1, arquivo)) { //unsigned int tem 4bytes == 32 bits
+        printf("Endereco: 0x%08X\n", buffer);
+
+    }
 
     fclose(arquivo);
 }
