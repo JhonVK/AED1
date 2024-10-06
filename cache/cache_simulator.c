@@ -40,8 +40,8 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
         exit(1);
     }
 
-    int cache_val[nsets][assoc];
-    int cache_tag[nsets][assoc];
+    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
+  
 	memset(cache_val, 0, sizeof(cache_val));
     memset(cache_tag, 0, sizeof(cache_tag));
 
@@ -79,7 +79,13 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 			hitTemp=0;
 		}
     }
-	printf("%d %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos);
+	if(flagOut==1){
+		printf("hits total: %d\n", hit);
+		printf("%d %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos); // casting para float
+	}else{
+
+	}
+	
     fclose(arquivo);
 }
 
