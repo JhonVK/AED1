@@ -48,7 +48,7 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
 
 	int n_bits_tag=32-n_bits_offset-n_bits_indice;
 
-
+	printf("offset: %d indice: %d tag: %d\n", n_bits_offset, n_bits_indice, n_bits_tag);
 	while (fread(&buffer, sizeof(unsigned int), 1, arquivo)) { //unsigned int tem 4bytes == 32 bits
         printf("Endereco: 0x%08X\n", buffer);
 
