@@ -88,7 +88,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     }
 	if(flagOut==1){
 		printf("hits total: %d\n", hit);
-		printf("%d %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos), (float)missCapacidade/acessos; // casting para float
+		printf("%d %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missConflito/acessos); // casting para float
 	}else{
 
 	}
