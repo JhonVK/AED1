@@ -29,33 +29,51 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
     }
 }
 
-void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada){
-	FILE *arquivo;
-	unsigned int buffer;
+void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada) {
+    FILE *arquivo;
+    unsigned char buffer[4];
+    unsigned int endereco;
 
-	arquivo=fopen(arquivoEntrada, "rb");
-	
-	if(arquivo==NULL){
-		printf("erro ao ler arquivo");
-		exit(1);
-	}
+    arquivo = fopen(arquivoEntrada, "rb");
 
-	int cache_val[nsets][assoc];
-	int cache_tag[nsets][assoc];
+    if (arquivo == NULL) {
+        printf("Erro ao ler arquivo\n");
+        exit(1);
+    }
 
-	int n_bits_offset=log2(bsize);
-	int n_bits_indice=log2(nsets);
+    int cache_val[nsets][assoc];
+    int cache_tag[nsets][assoc];
 
-	int n_bits_tag=32-n_bits_offset-n_bits_indice;
+    int n_bits_offset = log2(bsize);
+    int n_bits_indice = log2(nsets);
+    int n_bits_tag = 32 - n_bits_offset - n_bits_indice;
 
-	printf("offset: %d indice: %d tag: %d\n", n_bits_offset, n_bits_indice, n_bits_tag);
-	while (fread(&buffer, sizeof(unsigned int), 1, arquivo)) { //unsigned int tem 4bytes == 32 bits
-        printf("Endereco: 0x%08X\n", buffer);
+    printf("offset: %d\n", n_bits_offset);
+    printf("indice: %d\n", n_bits_indice);
+    printf("tag: %d\n", n_bits_tag);
 
+    while (fread(buffer, sizeof(unsigned char), 4, arquivo) == 4) {
+        // Combinando os bytes para formar o endereço completo de 32 bits
+        endereco = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
+        printf("Endereco lido: %u (decimal), 0x%08X (hexadecimal)\n", endereco, endereco);
+
+        // Calcular cada parte
+        unsigned int tag = endereco >> (n_bits_offset + n_bits_indice);
+        unsigned int buffer_shifted = endereco >> n_bits_offset;
+        unsigned int mask = (1 << n_bits_indice) - 1;
+        unsigned int indice = buffer_shifted & mask;
+
+        printf("Buffer: %u\n", endereco);
+        printf("Buffer shifted: %u\n", buffer_shifted);
+        printf("Mask aplicada: %u\n", mask);
+        printf("Bits mascarados para índice: %u\n", buffer_shifted & mask);
+        printf("Tag: %u\n", tag);
+        printf("Índice final: %u\n", indice);
     }
 
     fclose(arquivo);
 }
+
 
 int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	argc=0;
