@@ -28,7 +28,7 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
     }
 }
 
-void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada) {
+void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
     unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
@@ -42,6 +42,8 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
 
     int cache_val[nsets][assoc];
     int cache_tag[nsets][assoc];
+	memset(cache_val, 0, sizeof(cache_val));
+    memset(cache_tag, 0, sizeof(cache_tag));
 
     int n_bits_offset = log2(bsize);
     int n_bits_indice = log2(nsets);
@@ -51,10 +53,12 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
     printf("indice: %d\n", n_bits_indice);
     printf("tag: %d\n", n_bits_tag);
 
-    while(fread(buffer, sizeof(unsigned char), 4, arquivo) == 4) { // uns char tem 8 bits, 8*4= 32 bits
-    	endereco= buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
-		tag = endereco>>(n_bits_offset + n_bits_indice);
-		indice = (endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
+    while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // uns char tem 8 bits, 8*4= 32 bits
+
+    	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
+		tag=endereco>>(n_bits_offset + n_bits_indice);
+		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
+
 		printf("Tag: %d, Indice: %d\n", tag, indice);
 
 
@@ -63,8 +67,8 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
 				hitTemp=1;
 			}
 		}
-		if(hitTemp=0){//(MISS)
-			if(*subst=='R'){
+		if(hitTemp==0){//(MISS)
+			if(subst=='R'){
 				int randBloco=rand()%assoc;
 				cache_val[indice][randBloco]=1;
 				cache_tag[indice][randBloco]=tag;
@@ -85,21 +89,21 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	leituraDados(&argc, &argv);
 	if (argc != 7){
 		printf("Numero de argumentos incorreto. Utilize:\n");
-		printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");//./cache simulator 10 10 1 rand 1 bin_100.bin
+		printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
 		exit(EXIT_FAILURE);
 	}
 
 	int nsets = atoi(argv[1]);
 	int bsize = atoi(argv[2]);
 	int assoc = atoi(argv[3]);
-	char *subst = argv[4];
+	char subst = *argv[4];
 	int flagOut = atoi(argv[5]);
 	char *arquivoEntrada = argv[6];
 
 	printf("nsets = %d\n", nsets);
 	printf("bsize = %d\n", bsize);
 	printf("assoc = %d\n", assoc);
-	printf("subst = %s\n", subst);
+	printf("subst = %c\n", subst);
 	printf("flagOut = %d\n", flagOut);
 	printf("arquivo = %s\n", arquivoEntrada);
 
