@@ -31,7 +31,7 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0, acessos=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
 
     arquivo = fopen(arquivoEntrada, "rb");
 
@@ -58,13 +58,14 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
 		tag=endereco>>(n_bits_offset + n_bits_indice);
 		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
-
+		acessos++;
 		printf("Tag: %d, Indice: %d\n", tag, indice);
 
 
 		for(int i=0; i<assoc; i++){
-			if(cache_val[indice][assoc]==1 && cache_tag[indice][assoc]==tag){
+			if(cache_val[indice][i]==1 && cache_tag[indice][i]==tag){
 				hitTemp=1;
+				break;
 			}
 		}
 		if(hitTemp==0){//(MISS)
@@ -77,12 +78,10 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 			hit+=hitTemp;
 			hitTemp=0;
 		}
-		printf("Total de hits: %d", hit);
     }
-
+	printf("%d %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos);
     fclose(arquivo);
 }
-
 
 int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	argc=0;
