@@ -32,7 +32,7 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco;
+    unsigned int endereco; // uns int tem 4 bytes= 32 bits
 
     arquivo = fopen(arquivoEntrada, "rb");
 
@@ -52,23 +52,9 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
     printf("indice: %d\n", n_bits_indice);
     printf("tag: %d\n", n_bits_tag);
 
-    while (fread(buffer, sizeof(unsigned char), 4, arquivo) == 4) {
-        // Combinando os bytes para formar o endereço completo de 32 bits
-        endereco = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
-        printf("Endereco lido: %u (decimal), 0x%08X (hexadecimal)\n", endereco, endereco);
+    while (fread(buffer, sizeof(unsigned char), 4, arquivo) == 4) { // uns char tem 8 bits, 8*4= 32 bits
+    endereco= buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica invertido, por isso li byte por byte e dps inverti eles
 
-        // Calcular cada parte
-        unsigned int tag = endereco >> (n_bits_offset + n_bits_indice);
-        unsigned int buffer_shifted = endereco >> n_bits_offset;
-        unsigned int mask = (1 << n_bits_indice) - 1;
-        unsigned int indice = buffer_shifted & mask;
-
-        printf("Buffer: %u\n", endereco);
-        printf("Buffer shifted: %u\n", buffer_shifted);
-        printf("Mask aplicada: %u\n", mask);
-        printf("Bits mascarados para índice: %u\n", buffer_shifted & mask);
-        printf("Tag: %u\n", tag);
-        printf("Índice final: %u\n", indice);
     }
 
     fclose(arquivo);
