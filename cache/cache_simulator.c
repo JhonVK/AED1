@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 
 
@@ -39,8 +40,13 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
 		exit(1);
 	}
 
-	int cache_val [nsets][assoc];
-	int cache_tag [nsets][assoc];
+	int cache_val[nsets][assoc];
+	int cache_tag[nsets][assoc];
+
+	int n_bits_offset=log2(bsize);
+	int n_bits_indice=log2(nsets);
+
+	int n_bits_tag=32-n_bits_offset-n_bits_indice;
 
 
 	while (fread(&buffer, sizeof(unsigned int), 1, arquivo)) { //unsigned int tem 4bytes == 32 bits
