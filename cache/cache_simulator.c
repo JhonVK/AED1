@@ -38,6 +38,11 @@ void criarCache(int nsets, int bsize, int assoc, char *subst, int flagOut, char 
 		printf("erro ao ler arquivo");
 		exit(1);
 	}
+
+	int cache_val [nsets][assoc];
+	int cache_tag [nsets][assoc];
+
+
 	while (fread(&buffer, sizeof(unsigned int), 1, arquivo)) { //unsigned int tem 4bytes == 32 bits
         printf("Endereco: 0x%08X\n", buffer);
 
