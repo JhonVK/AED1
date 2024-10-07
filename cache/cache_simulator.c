@@ -30,7 +30,8 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0; // unsigned int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+	unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
 
     arquivo = fopen(arquivoEntrada, "rb");
 
@@ -39,21 +40,19 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
         exit(1);
     }
 
-    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
-  
-	for (int i = 0; i < nsets; i++) {
-    	for (int j = 0; j < assoc; j++) {
-        	cache_val[i][j] = 0;
-        	cache_tag[i][j] = 0;
-   		}
+	//zerando totalmente nossa cache
+	for(int i=0; i<nsets; i++){
+		for(int j=0; j<assoc; j++){
+			cache_val[i][j]=0;
+			cache_tag[i][j]=0;
+		}
 	}
-
 
     int n_bits_offset = log2(bsize);
     int n_bits_indice = log2(nsets);
     int n_bits_tag = 32 - n_bits_offset - n_bits_indice;
 
-    while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // uns char tem 8 bits, 8*4= 32 bits
+    while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // unsigned char tem 8 bits, 8*4= 32 bits
 
     	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
 		tag=endereco>>(n_bits_offset + n_bits_indice);
