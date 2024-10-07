@@ -5,9 +5,8 @@
 
 
 void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
-											//*argv é o ponteiro que aponta para o primeiro elemento do vetor
-											//**argv é o valor do vetor
-    char string[50];
+											//*argv é o ponteiro que aponta para o primeiro elemento do vetor																			
+    char string[50];						//**argv é o valor do vetor
     char *token;
     
     fgets(string, 50, stdin);
@@ -31,7 +30,7 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0, acessos=0, blocoVazio=0, missConflito=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0, acessos=0, blocoVazio=0, missConflito=0, missCapacidade=0, missCompulsorio=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
 
     arquivo = fopen(arquivoEntrada, "rb");
 
