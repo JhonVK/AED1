@@ -78,6 +78,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 				cache_tag[indice][blocoVazio]=tag;
 				missCompulsorio++;		
 			}else{
+			//aqui vemos se a cache esta cheia pra definir se é miss de capacidade ou de conflito.
 				int todacacheCheia=1;
 				for(int i=0; i<nsets; i++){
 					for(int j=0; j<assoc; j++){
