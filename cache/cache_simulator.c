@@ -30,7 +30,7 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hitTemp=0, hit=0, acessos=0, blocoVazio=0, missConflito=0, missCapacidade=0, missCompulsorio=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0; // uns int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
 
     arquivo = fopen(arquivoEntrada, "rb");
 
@@ -41,8 +41,13 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 
     unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
   
-	memset(cache_val, 0, sizeof(cache_val));
-    memset(cache_tag, 0, sizeof(cache_tag));
+	for (int i = 0; i < nsets; i++) {
+    	for (int j = 0; j < assoc; j++) {
+        	cache_val[i][j] = 0;
+        	cache_tag[i][j] = 0;
+   		}
+	}
+
 
     int n_bits_offset = log2(bsize);
     int n_bits_indice = log2(nsets);
@@ -55,43 +60,59 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
 		acessos++;
 
+		int hitTemp=0;
+		int blocoVazio=-1;
 		for(int i=0; i<assoc; i++){
 			if(cache_val[indice][i]==1 && cache_tag[indice][i]==tag){
 				hitTemp=1;
 				break;
 			}
+			if(cache_val[indice][i] == 0 && blocoVazio == -1){
+                blocoVazio = i;
+            }
 		}
 		if(hitTemp==0){//(MISS)
-			if(subst=='R'){
-				for(int i=0; i<assoc; i++){
-					if(cache_val[indice][i]==0 && cache_tag[indice][i]==0){
-						cache_val[indice][i]=1;
-						cache_tag[indice][i]=tag;
-						blocoVazio=1;
-						break;
+			//(miss compulsorio)
+			if(blocoVazio!=-1){
+				cache_val[indice][blocoVazio]=1;
+				cache_tag[indice][blocoVazio]=tag;
+				missCompulsorio++;		
+			}else{
+				int todacacheCheia=1;
+				for(int i=0; i<nsets; i++){
+					for(int j=0; j<assoc; j++){
+						if(cache_val[i][j]==0){
+							todacacheCheia=0;
+							break;
+						}
+						if(todacacheCheia==0){
+							break;
+						}
 					}
 				}
-				if(blocoVazio==0){
-					missConflito++;
-					int randBloco=rand()%assoc;
-					cache_val[indice][randBloco]=1;
-					cache_tag[indice][randBloco]=tag;
-				}else{
-					blocoVazio=0;
-				}
+			if(todacacheCheia){
+				missCapacidade++;
+			}else{
+				missConflito++;
 			}
+
+			if(subst=='R'){
+				randBloco=rand()%assoc;
+				cache_val[indice][randBloco]=1;
+				cache_tag[indice][randBloco]=tag;
+			}
+		}
+
 		}else{
-			hit+=hitTemp;
-			hitTemp=0;
+			hit++;
 		}
     }
 	if(flagOut==1){
 		printf("hits total: %d\n", hit);
-		printf("%d %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missConflito/acessos); // casting para float
+		printf("%d %f %f %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
 	}else{
 
 	}
-	
     fclose(arquivo);
 }
 
@@ -121,6 +142,7 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
 
 	free(argv);
+
 
 	return 0;
 }
