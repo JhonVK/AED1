@@ -95,23 +95,20 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 			}else{
 				missConflito++;
 			}
-
 			if(subst=='R'){
 				randBloco=rand()%assoc;
 				cache_val[indice][randBloco]=1;
 				cache_tag[indice][randBloco]=tag;
 			}
 		}
-
 		}else{
 			hit++;
 		}
     }
 	if(flagOut==1){
-		printf("hits total: %d\n", hit);
 		printf("%d %f %f %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
 	}else{
-
+		printf("Total de acessos: %d\nTaxa de hit: %f\nTaxa de miss: %f\nTaxa de miss compulsorio: %f\nTaxa de miss de capacidade: %f\nTaxa de miss de conflito: %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); 
 	}
     fclose(arquivo);
 }
