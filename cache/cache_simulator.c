@@ -27,12 +27,13 @@ void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do pontei
         token=strtok(NULL, " ");
         (*argc)++;
     }
+	
 }
 
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0; // unsigned int tem 4 bytes= 32 bits cache_simulator 256 4 1 R 1 bin_100.bin
+    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0; // unsigned int tem 4 bytes= 32 bits ./cache_simulator 256 4 1 R 1 bin_100.bin
 	unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
 
     arquivo = fopen(arquivoEntrada, "rb");
@@ -109,42 +110,52 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 		}
     }
 	if(flagOut==1){
-		printf("%d %.4f %.4f %.4f %.4f %.4f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
+		printf("%d %.4f %.4f %.4f %.4f %.4f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
 	}else{
-		printf("Total de acessos: %d\nTaxa de hit: %f\nTaxa de miss: %f\nTaxa de miss compulsorio: %f\nTaxa de miss de capacidade: %f\nTaxa de miss de conflito: %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); 
+		printf("Total de acessos: %d\nTaxa de hit: %f\nTaxa de miss: %f\nTaxa de miss compulsorio: %f\nTaxa de miss de capacidade: %f\nTaxa de miss de conflito: %f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); 
 	}
     fclose(arquivo);
 }
 
-int main(int argc, char *argv[]){//argv é um vetor de ponteiros, (modelo que o prof sugeriu )
+
+
+int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiros (modelo que o prof sugeriu )
 	argc=0;
-	leituraDados(&argc, &argv);
-	if (argc != 7){
-		printf("Numero de argumentos incorreto. Utilize:\n");
-		printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
-		exit(EXIT_FAILURE);
-	}
+	char *nome;
+	do{
+		leituraDados(&argc, &argv);
+		if(argc != 7){
+			printf("Numero de argumentos incorreto. Utilize:\n");
+			printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
+			exit(EXIT_FAILURE);
+		}
+		nome = strdup(argv[0]);
+		int nsets = atoi(argv[1]);
+		int bsize = atoi(argv[2]);
+		int assoc = atoi(argv[3]);
+		char subst = *argv[4];
+		int flagOut = atoi(argv[5]);
+		char *arquivoEntrada = argv[6];
 
-	int nsets = atoi(argv[1]);
-	int bsize = atoi(argv[2]);
-	int assoc = atoi(argv[3]);
-	char subst = *argv[4];
-	int flagOut = atoi(argv[5]);
-	char *arquivoEntrada = argv[6];
+		//printf("nsets = %d\n", nsets);
+		//printf("bsize = %d\n", bsize);
+		//printf("assoc = %d\n", assoc);
+		//printf("subst = %c\n", subst);
+		//printf("flagOut = %d\n", flagOut);
+		//rintf("arquivo = %s\n", arquivoEntrada);
 
-	//printf("nsets = %d\n", nsets);
-	//printf("bsize = %d\n", bsize);
-	//printf("assoc = %d\n", assoc);
-	//printf("subst = %c\n", subst);
-	//printf("flagOut = %d\n", flagOut);
-	//rintf("arquivo = %s\n", arquivoEntrada);
+		criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
 
-	criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
+		//IMPORTANTE
+		for(int i=0; i<argc; i++){
+			free(argv[i]);
+		}
+		free(argv);
+		argv=NULL;
+		argc=0;
 
-	gtk_init(&argc, &argv);
-
-	free(argv);
-
+	}while(!strcmp(nome, "cache_simulator"));
+	
 	return 0;
 }
 
