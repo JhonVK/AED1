@@ -6,8 +6,9 @@
 
 
 void leituraDados(int *argc, char ***argv){ //argv recebe o endereço do ponteiro que aponta para o vetor de ponteiros,
-											//*argv é o ponteiro que aponta para o primeiro elemento do vetor																			
-    char string[50];						//**argv é o valor do vetor
+											//*argv é o ponteiro que aponta para o vetor de ponteiros,																			
+    char string[50];						//**argv é o ponteiro que aponta para o primeiro elemento do vetor
+											//*** argv é o valor de ponteiro(vetor)
     char *token;
     
     fgets(string, 50, stdin);
