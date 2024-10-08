@@ -3,7 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <gtk/gtk.h>
 
 
 void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
@@ -151,6 +150,7 @@ int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiro
 			free(argv[i]);
 		}
 		free(argv);
+		free(nome);
 		argv=NULL;
 		argc=0;
 
