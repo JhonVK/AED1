@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <gtk/gtk.h>
 
 
 void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
@@ -115,7 +116,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     fclose(arquivo);
 }
 
-int main(int argc, char *argv[]){//argv é um vetor de ponteiros
+int main(int argc, char *argv[]){//argv é um vetor de ponteiros, (modelo que o prof sugeriu )
 	argc=0;
 	leituraDados(&argc, &argv);
 	if (argc != 7){
@@ -140,8 +141,9 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 
 	criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
 
-	free(argv);
+	gtk_init(&argc, &argv);
 
+	free(argv);
 
 	return 0;
 }
