@@ -5,7 +5,7 @@
 #include <time.h>
 
 
-void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
+void leituraDados(int *argc, char ***argv){ //argv recebe o endereço do ponteiro que aponta para o vetor de ponteiros,
 											//*argv é o ponteiro que aponta para o primeiro elemento do vetor																			
     char string[50];						//**argv é o valor do vetor
     char *token;
@@ -116,8 +116,17 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     fclose(arquivo);
 }
 
+void limparMem(int *argc, char ***argv, char **nome){
+	for(int i=0; i<(*argc); i++){
+		free(argv[i]);
+	}
+	free(argv);
+	free(nome);
+	argv=NULL;
+	nome=NULL;
+	(*argc)=0;
 
-
+}
 int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiros (modelo que o prof sugeriu )
 	argc=0;
 	char *nome;
@@ -144,15 +153,7 @@ int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiro
 		//rintf("arquivo = %s\n", arquivoEntrada);
 
 		criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
-
-		//IMPORTANTE
-		for(int i=0; i<argc; i++){
-			free(argv[i]);
-		}
-		free(argv);
-		free(nome);
-		argv=NULL;
-		argc=0;
+		limparMem(&argc, &argv, &nome);
 
 	}while(!strcmp(nome, "cache_simulator"));
 	
