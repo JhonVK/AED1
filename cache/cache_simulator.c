@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiro
 		leituraDados(&argc, &argv);
 		if(argc != 7){
 			printf("Numero de argumentos incorreto. Utilize:\n");
-			printf("./cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
+			printf("cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
 			exit(EXIT_FAILURE);
 		}
 		nome = strdup(argv[0]);
