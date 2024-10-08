@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 
 void leituraDados(int *argc, char ***argv){ //argv aqui é o endereço do ponteiro que aponta para o primeiro elemento do vetor,
@@ -96,6 +97,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 				missConflito++;
 			}
 			if(subst=='R'){
+				srand(time(NULL));//isso gera uma seed nova toda vez 
 				randBloco=rand()%assoc;
 				cache_val[indice][randBloco]=1;
 				cache_tag[indice][randBloco]=tag;
@@ -106,7 +108,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 		}
     }
 	if(flagOut==1){
-		printf("%d %f %f %f %f %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
+		printf("%d %.4f %.4f %.4f %.4f %.4f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
 	}else{
 		printf("Total de acessos: %d\nTaxa de hit: %f\nTaxa de miss: %f\nTaxa de miss compulsorio: %f\nTaxa de miss de capacidade: %f\nTaxa de miss de conflito: %f", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); 
 	}
@@ -129,12 +131,12 @@ int main(int argc, char *argv[]){//argv é um vetor de ponteiros
 	int flagOut = atoi(argv[5]);
 	char *arquivoEntrada = argv[6];
 
-	printf("nsets = %d\n", nsets);
-	printf("bsize = %d\n", bsize);
-	printf("assoc = %d\n", assoc);
-	printf("subst = %c\n", subst);
-	printf("flagOut = %d\n", flagOut);
-	printf("arquivo = %s\n", arquivoEntrada);
+	//printf("nsets = %d\n", nsets);
+	//printf("bsize = %d\n", bsize);
+	//printf("assoc = %d\n", assoc);
+	//printf("subst = %c\n", subst);
+	//printf("flagOut = %d\n", flagOut);
+	//rintf("arquivo = %s\n", arquivoEntrada);
 
 	criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
 
