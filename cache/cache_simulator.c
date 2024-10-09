@@ -7,9 +7,8 @@
 
 void leituraDados(int *argc, char ***argv){ //argv recebe o endereço do ponteiro que aponta para o vetor de ponteiros,
 											//*argv é o ponteiro que aponta para o vetor de ponteiros,																			
-    char string[50];						//**argv é o ponteiro que aponta para o primeiro elemento do vetor
-											//*** argv é o valor de ponteiro(vetor)
-    char *token;
+    char string[50];						//**argv é o ponteiro que aponta para o primeiro elemento do vetor										
+    char *token;							//*** argv é o valor de ponteiro
     
     fgets(string, 50, stdin);
 
@@ -118,14 +117,13 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 }
 
 void limparMem(int *argc, char ***argv, char **nome){
-	for(int i=0; i<(*argc); i++){
-		free(argv[i]);
+	for(int i=0; i<*argc; i++){
+		free((*argv)[i]);
 	}
-	free(argv);
-	free(nome);
-	argv=NULL;
-	nome=NULL;
-	(*argc)=0;
+	free(*argv);
+	free(*nome);
+	*argv=NULL;
+	*argc=0;
 
 }
 int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiros (modelo que o prof sugeriu )
