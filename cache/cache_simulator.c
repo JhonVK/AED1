@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-
+#include <stdbool.h>
 
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
@@ -28,46 +28,46 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 
     int n_bits_offset = log2(bsize);
     int n_bits_indice = log2(nsets);
-    int n_bits_tag = 32 - n_bits_offset - n_bits_indice;
-
+	srand(time(NULL));//isso gera uma seed nova 
     while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // unsigned char tem 8 bits, 8*4= 32 bits
-		srand(time(NULL));//isso gera uma seed nova 
+		
     	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
 		tag=endereco>>(n_bits_offset + n_bits_indice);
 		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
 		acessos++;
+		bool verifiHit=false, cacheEspaco=false, verifiMiss=false;
 
-		int hitTemp=0;
-		int blocoVazio=-1;
 		for(int i=0; i<assoc; i++){
 			if(cache_val[indice][i]==1 && cache_tag[indice][i]==tag){
-				hitTemp=1;
+				hit++;
+				verifiHit=true;
+				break;
 			}
-			if(cache_val[indice][i] == 0 && blocoVazio == -1){
-                blocoVazio = i;
-            }
 		}
-		if(!hitTemp){//(MISS)
+		
+		if(!verifiHit){//(MISS)
 			//(miss compulsorio)
-			if(blocoVazio!=-1){
-				cache_val[indice][blocoVazio]=1;
-				cache_tag[indice][blocoVazio]=tag;
-				missCompulsorio++;		
-			}else{
+			for(int i=0; i<assoc; i++){
+				if(cache_val[indice][i]==0){
+					cache_val[indice][i]=1;
+					cache_tag[indice][i]=tag;
+					missCompulsorio++;	
+					verifiMiss=true;
+					break;
+				}
+			}	
+		
 			//aqui vemos se a cache esta cheia pra definir se é miss de capacidade ou de conflito.
-				int todacacheCheia=1;
-				for(int i=0; i<nsets; i++){
-					for(int j=0; j<assoc; j++){
-						if(cache_val[i][j]==0){
-							todacacheCheia=0;
-							break;
-						}
-						if(todacacheCheia==0){
-							break;
-						}
+			if(!verifiMiss){
+			for(int i=0; i<nsets; i++){
+				for(int j=0; j<assoc; j++){
+					if(cache_val[i][j]==0){
+						cacheEspaco=true;
+						break;
 					}
 				}
-			if(todacacheCheia){
+			}
+			if(!cacheEspaco){
 				missCapacidade++;
 			}else{
 				missConflito++;
@@ -77,10 +77,9 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 				cache_val[indice][randBloco]=1;
 				cache_tag[indice][randBloco]=tag;
 			}
+			}
 		}
-		}else{
-			hit++;
-		}
+		
     }
 	if(flagOut==1){
 		printf("%d %.4f %.4f %.4f %.4f %.4f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); // casting para float
