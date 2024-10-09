@@ -86,19 +86,9 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     }
 
     if (flagOut == 1) {
-        printf("%d %.4f %.4f %.4f %.4f %.4f\n", acessos, (float)hit / acessos,
-               (float)(acessos - hit) / acessos, (float)missCompulsorio / (acessos - hit),
-               (float)missCapacidade / (acessos - hit), (float)missConflito / (acessos - hit));
+        printf("%d %.4f %.4f %.4f %.4f %.4f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit));
     } else {
-        printf("Total de acessos: %d\n"
-               "Taxa de hit: %f\n"
-               "Taxa de miss: %f\n"
-               "Taxa de miss compulsorio: %f\n"
-               "Taxa de miss de capacidade: %f\n"
-               "Taxa de miss de conflito: %f\n",
-               acessos, (float)hit / acessos, (float)(acessos - hit) / acessos,
-               (float)missCompulsorio / (acessos - hit), (float)missCapacidade / (acessos - hit),
-               (float)missConflito / (acessos - hit));
+        printf("Total de acessos: %d\nTaxa de hit: %f\nTaxa de miss: %f\nTaxa de miss compulsorio: %f\nTaxa de miss de capacidade: %f\nTaxa de miss de conflito: %f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); 
     }
 
     fclose(arquivo);
