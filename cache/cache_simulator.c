@@ -10,7 +10,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     unsigned char buffer[4];
     unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0;
     unsigned int missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0;
-    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
+    int cache_val[nsets][assoc], cache_tag[nsets][assoc];
 
     arquivo=fopen(arquivoEntrada, "rb");
     if (arquivo==NULL) {
@@ -80,7 +80,11 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     randBloco = rand() % assoc;
                     cache_val[indice][randBloco]=1;
                     cache_tag[indice][randBloco]=tag;
-                }
+                }else if(subst=='F'){
+					randBloco = rand() % assoc;
+                    cache_val[indice][randBloco]=1;
+                    cache_tag[indice][randBloco]=tag;
+				}
             }
         }
     }
