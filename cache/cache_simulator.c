@@ -7,10 +7,10 @@
 
 void leituraDados(int *argc, char ***argv){ //argv recebe o endereço do ponteiro que aponta para o vetor de ponteiros,
 											//*argv é o ponteiro que aponta para o vetor de ponteiros,																			
-    char string[50];						//**argv é o ponteiro que aponta para o primeiro elemento do vetor										
+    char string[80];						//**argv é o ponteiro que aponta para o primeiro elemento do vetor										
     char *token;							//*** argv é o valor de ponteiro
     
-    fgets(string, 50, stdin);
+    fgets(string, 80, stdin);
 
 	int tamanho = strlen(string); // removendo o \n que o fgets concatena no final da leitura
     if(tamanho>0 && string[tamanho-1]=='\n') {
@@ -21,7 +21,7 @@ void leituraDados(int *argc, char ***argv){ //argv recebe o endereço do ponteir
 
     while(token!=NULL){
         *argv = realloc(*argv, sizeof(char*)*((*argc) + 1));
-        (*argv)[*argc]=malloc(sizeof(char)*50);
+        (*argv)[*argc]=malloc(sizeof(char)*80);
         strcpy((*argv)[*argc], token);
         token=strtok(NULL, " ");
         (*argc)++;
