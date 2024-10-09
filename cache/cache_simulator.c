@@ -5,30 +5,6 @@
 #include <time.h>
 
 
-void leituraDados(int *argc, char ***argv){ //argv recebe o endereço do ponteiro que aponta para o vetor de ponteiros,
-											//*argv é o ponteiro que aponta para o vetor de ponteiros,																			
-    char string[80];						//**argv é o ponteiro que aponta para o primeiro elemento do vetor										
-    char *token;							//*** argv é o valor de ponteiro
-    
-    fgets(string, 80, stdin);
-
-	int tamanho = strlen(string); // removendo o \n que o fgets concatena no final da leitura
-    if(tamanho>0 && string[tamanho-1]=='\n') {
-        string[tamanho-1] = '\0';
-    }
-	
-    token = strtok(string, " ");
-
-    while(token!=NULL){
-        *argv = realloc(*argv, sizeof(char*)*((*argc) + 1));
-        (*argv)[*argc]=malloc(sizeof(char)*80);
-        strcpy((*argv)[*argc], token);
-        token=strtok(NULL, " ");
-        (*argc)++;
-    }
-	
-}
-
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
@@ -55,7 +31,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     int n_bits_tag = 32 - n_bits_offset - n_bits_indice;
 
     while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // unsigned char tem 8 bits, 8*4= 32 bits
-
+		srand(time(NULL));//isso gera uma seed nova toda vez
     	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
 		tag=endereco>>(n_bits_offset + n_bits_indice);
 		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
@@ -66,7 +42,6 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 		for(int i=0; i<assoc; i++){
 			if(cache_val[indice][i]==1 && cache_tag[indice][i]==tag){
 				hitTemp=1;
-				break;
 			}
 			if(cache_val[indice][i] == 0 && blocoVazio == -1){
                 blocoVazio = i;
@@ -97,8 +72,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 			}else{
 				missConflito++;
 			}
-			if(subst=='R'){
-				srand(time(NULL));//isso gera uma seed nova toda vez 
+			if(subst=='R'){ 
 				randBloco=rand()%assoc;
 				cache_val[indice][randBloco]=1;
 				cache_tag[indice][randBloco]=tag;
@@ -116,27 +90,22 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     fclose(arquivo);
 }
 
-void limparMem(int *argc, char ***argv, char **nome){
+void limparMem(int *argc, char ***argv){
 	for(int i=0; i<*argc; i++){
 		free((*argv)[i]);
 	}
 	free(*argv);
-	free(*nome);
+	
 	*argv=NULL;
 	*argc=0;
 
 }
-int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiros (modelo que o prof sugeriu )
-	argc=0;
-	char *nome;
-	do{
-		leituraDados(&argc, &argv);
+int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiros (modelo que o prof sugeriu )	
 		if(argc != 7){
 			printf("Numero de argumentos incorreto. Utilize:\n");
 			printf("cache_simulator <nsets> <bsize> <assoc> <substituicao> <flag_saida> arquivo_de_entrada\n");
 			exit(EXIT_FAILURE);
 		}
-		nome = strdup(argv[0]);
 		int nsets = atoi(argv[1]);
 		int bsize = atoi(argv[2]);
 		int assoc = atoi(argv[3]);
@@ -152,9 +121,9 @@ int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiro
 		//rintf("arquivo = %s\n", arquivoEntrada);
 
 		criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
-		limparMem(&argc, &argv, &nome);
+		limparMem(&argc, &argv);
 
-	}while(!strcmp(nome, "cache_simulator"));
+
 	
 	return 0;
 }
