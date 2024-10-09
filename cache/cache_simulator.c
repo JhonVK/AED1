@@ -159,4 +159,3 @@ int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiro
 	return 0;
 }
 
-
