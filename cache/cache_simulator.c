@@ -22,7 +22,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
 	for(int i=0; i<nsets; i++){
 		for(int j=0; j<assoc; j++){
 			cache_val[i][j]=0;
-			cache_tag[i][j]=0;
+			cache_tag[i][j]=-1;
 		}
 	}
 
@@ -31,7 +31,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     int n_bits_tag = 32 - n_bits_offset - n_bits_indice;
 
     while(fread(buffer, sizeof(unsigned char), 4, arquivo)==4) { // unsigned char tem 8 bits, 8*4= 32 bits
-		srand(time(NULL));//isso gera uma seed nova toda vez
+		srand(time(NULL));//isso gera uma seed nova 
     	endereco=buffer[0]<<24 | buffer[1]<<16 | buffer[2]<<8 | buffer[3];// por algum motivo se lermos direto, (32 bits de uma vez) o endereço fica em little endian.Por isso li byte por byte e desloquei eles para big endian
 		tag=endereco>>(n_bits_offset + n_bits_indice);
 		indice=(endereco >> n_bits_offset) & ((unsigned int)pow(2, n_bits_indice)-1); 
@@ -47,7 +47,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                 blocoVazio = i;
             }
 		}
-		if(hitTemp==0){//(MISS)
+		if(!hitTemp){//(MISS)
 			//(miss compulsorio)
 			if(blocoVazio!=-1){
 				cache_val[indice][blocoVazio]=1;
@@ -90,16 +90,6 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     fclose(arquivo);
 }
 
-void limparMem(int *argc, char ***argv){
-	for(int i=0; i<*argc; i++){
-		free((*argv)[i]);
-	}
-	free(*argv);
-	
-	*argv=NULL;
-	*argc=0;
-
-}
 int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiros (modelo que o prof sugeriu )	
 		if(argc != 7){
 			printf("Numero de argumentos incorreto. Utilize:\n");
@@ -121,7 +111,6 @@ int main(int argc, char *argv[]){//argv é um ponteiro para um array de ponteiro
 		//rintf("arquivo = %s\n", arquivoEntrada);
 
 		criarCache(nsets, bsize, assoc, subst, flagOut, arquivoEntrada);
-		limparMem(&argc, &argv);
 
 
 	
