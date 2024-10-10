@@ -10,7 +10,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
     unsigned char buffer[4];
     unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, blocoSubstituir=0;
     unsigned int missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0;
-    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc], fifo_time[nsets][assoc];
+    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc], fifo_time[nsets][assoc], lru_acessos[nsets][assoc];
 
     arquivo=fopen(arquivoEntrada, "rb");
     if (arquivo==NULL) {
@@ -24,6 +24,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
             cache_val[i][j]=0;
             cache_tag[i][j]=-1;
             fifo_time[i][j]=0;
+            lru_acessos[i][j]=0;
         }
     }
 
@@ -43,6 +44,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
             if (cache_val[indice][i]==1 && cache_tag[indice][i]==tag) {
                 hit++;
                 verifiHit = true;
+                lru_acessos[indice][i]=acessos;
                 break;
             }
         }
@@ -56,6 +58,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     missCompulsorio++;
                     verifiMiss=true;
                     fifo_time[indice][i] = acessos;
+                    lru_acessos[indice][i] = acessos;
                     break;
                 }
             }
@@ -83,7 +86,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     cache_val[indice][randBloco]=1;
                     cache_tag[indice][randBloco]=tag;
                 }else if(subst=='F'){
-                    int min_tempo = fifo_time[indice][0];
+                    unsigned int min_tempo = fifo_time[indice][0];
                     blocoSubstituir=0;
 					for (int i=1; i<assoc; i++){
                         if(fifo_time[indice][i]<min_tempo){
@@ -94,7 +97,20 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     cache_val[indice][blocoSubstituir] = 1;
                     cache_tag[indice][blocoSubstituir] = tag;
                     fifo_time[indice][blocoSubstituir] = acessos;
-				}
+				}else if(subst=='L'){
+                    unsigned int menorAcesso = __INT_MAX__;
+                    blocoSubstituir = 0;
+					for (int i=0; i<assoc; i++){
+                        if(lru_acessos[indice][i]<menorAcesso){
+                            menorAcesso=lru_acessos[indice][i];
+                            blocoSubstituir=i;
+                        }
+                    }
+                    cache_val[indice][blocoSubstituir] = 1;
+                    cache_tag[indice][blocoSubstituir] = tag;
+                    lru_acessos[indice][blocoSubstituir]=acessos;
+
+                }
             }
         }
     }
