@@ -110,6 +110,8 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     cache_tag[indice][blocoSubstituir] = tag;
                     lru_acessos[indice][blocoSubstituir]=acessos;
 
+                }else{
+                    exit(1);
                 }
             }
         }
