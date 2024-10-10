@@ -8,9 +8,9 @@
 void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *arquivoEntrada) {
     FILE *arquivo;
     unsigned char buffer[4];
-    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0;
+    unsigned int endereco=0, tag=0, indice=0, hit=0, acessos=0, blocoSubstituir=0;
     unsigned int missConflito=0, missCapacidade=0, randBloco, missCompulsorio=0;
-    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc];
+    unsigned int cache_val[nsets][assoc], cache_tag[nsets][assoc], fifo_time[nsets][assoc];
 
     arquivo=fopen(arquivoEntrada, "rb");
     if (arquivo==NULL) {
@@ -23,6 +23,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
         for (int j=0; j<assoc; j++) {
             cache_val[i][j]=0;
             cache_tag[i][j]=-1;
+            fifo_time[i][j]=0;
         }
     }
 
@@ -54,6 +55,7 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     cache_tag[indice][i]=tag;
                     missCompulsorio++;
                     verifiMiss=true;
+                    fifo_time[indice][i] = acessos;
                     break;
                 }
             }
@@ -76,22 +78,30 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     missConflito++;
                 }
 
-                if (subst=='R') {
+                if(subst=='R'){
                     randBloco = rand() % assoc;
                     cache_val[indice][randBloco]=1;
                     cache_tag[indice][randBloco]=tag;
                 }else if(subst=='F'){
-					randBloco = rand() % assoc;
-                    cache_val[indice][randBloco]=1;
-                    cache_tag[indice][randBloco]=tag;
+                    int min_tempo = fifo_time[indice][0];
+                    blocoSubstituir=0;
+					for (int i=1; i<assoc; i++){
+                        if(fifo_time[indice][i]<min_tempo){
+                            min_tempo=fifo_time[indice][i];
+                            blocoSubstituir=i;
+                        }
+                    }
+                    cache_val[indice][blocoSubstituir] = 1;
+                    cache_tag[indice][blocoSubstituir] = tag;
+                    fifo_time[indice][blocoSubstituir] = acessos;
 				}
             }
         }
     }
 
-    if (flagOut == 1) {
-        printf("%d %.4f %.4f %.4f %.4f %.4f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit));
-    } else {
+    if(flagOut == 1) {
+        printf("%d %.4f %.4f %.2f %.2f %.2f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit));
+    }else{
         printf("Total de acessos: %d\nTaxa de hit: %f\nTaxa de miss: %f\nTaxa de miss compulsorio: %f\nTaxa de miss de capacidade: %f\nTaxa de miss de conflito: %f\n", acessos, (float)hit/acessos, (float)(acessos-hit)/acessos, (float)missCompulsorio/(acessos-hit), (float)missCapacidade/(acessos-hit), (float)missConflito/(acessos-hit)); 
     }
 
