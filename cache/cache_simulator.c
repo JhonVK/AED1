@@ -74,7 +74,6 @@ void criarCache(int nsets, int bsize, int assoc, char subst, int flagOut, char *
                     }
                     if(cacheEspaco)break;
                 }
-
                 if(!cacheEspaco){
                     missCapacidade++;
                 }else{
